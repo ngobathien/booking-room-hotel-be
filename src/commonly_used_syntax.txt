@@ -1,0 +1,14 @@
+// 400
+throw new BadRequestException('Sai dữ liệu');
+
+// 401
+throw new UnauthorizedException('Chưa đăng nhập');
+
+// 403
+throw new ForbiddenException('Không có quyền');
+
+// 404
+throw new NotFoundException('Không tìm thấy');
+
+// 409
+throw new ConflictException('Đã tồn tại');
