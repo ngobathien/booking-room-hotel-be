@@ -1,3 +1,4 @@
+import 'tsconfig-paths/register';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../src/app.module';
 
@@ -30,5 +31,5 @@ export default async function handler(req: Request, res: Response) {
 
   const server = appInstance.getHttpAdapter().getInstance() as Express;
 
-  void server(req, res);
+  server(req, res);
 }
