@@ -5,18 +5,18 @@ import { ConfigModule } from '@nestjs/config';
 import { Room, RoomSchema } from './schemas/room.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { UsersModule } from '@/users/users.module';
+import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from '@/auth/constants';
-import { RoomTypesModule } from '@/room-types/room-types.module';
+import { jwtConstants } from '../auth/constants';
+import { RoomTypesModule } from '../room-types/room-types.module';
 
 import {
   RoomType,
   RoomTypeSchema,
-} from '@/room-types/schemas/room-type.schema';
-import { SupabaseService } from '@/config/supabase.config';
-import { BookingsModule } from '@/bookings/bookings.module';
-import { Booking, BookingSchema } from '@/bookings/schemas/booking.schema';
+} from '../room-types/schemas/room-type.schema';
+import { SupabaseService } from '../config/supabase.config';
+import { BookingsModule } from '../bookings/bookings.module';
+import { Booking, BookingSchema } from '../bookings/schemas/booking.schema';
 
 @Module({
   imports: [

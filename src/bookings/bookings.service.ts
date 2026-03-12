@@ -13,12 +13,12 @@ import {
   BookingStayStatus,
 } from './schemas/booking.schema';
 import { Model } from 'mongoose';
-import { Room, RoomDocument } from '@/rooms/schemas/room.schema';
+import { Room, RoomDocument } from '../rooms/schemas/room.schema';
 import {
   RoomType,
   RoomTypeDocument,
-} from '@/room-types/schemas/room-type.schema';
-import { User, UserDocument } from '@/users/schemas/user.schema';
+} from '../room-types/schemas/room-type.schema';
+import { User, UserDocument } from '../users/schemas/user.schema';
 
 @Injectable()
 export class BookingsService {
