@@ -7,8 +7,10 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Observable } from 'rxjs';
 import { Request } from 'express';
-import { UserRole } from '@/users/schemas/user.schema';
-import { UsersService } from '@/users/users.service';
+import { UserRole } from '../../users/schemas/user.schema';
+import { UsersService } from '../../users/users.service';
+// import { UserRole } from '../users/schemas/user.schema';
+// import { UsersService } from '../users/users.service';
 
 interface AuthenticatedRequest extends Request {
   user?: { userId: string; role: UserRole };
