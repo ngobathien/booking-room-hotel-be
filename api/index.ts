@@ -1,20 +1,34 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../src/app.module';
-import serverlessExpress from '@vendia/serverless-express';
 
-let server: any;
+import { ValidationPipe, INestApplication } from '@nestjs/common';
+import { Request, Response, Express } from 'express';
+import cookieParser from 'cookie-parser';
+
+let app: INestApplication;
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  await app.init();
+  if (!app) {
+    app = await NestFactory.create(AppModule);
 
-  const express = app.getHttpAdapter().getInstance();
-  return serverlessExpress({ app: express });
+    const api_url = process.env.API_URL;
+
+    app.use(cookieParser());
+    app.setGlobalPrefix(api_url || '/api/v1');
+
+    app.useGlobalPipes(new ValidationPipe());
+    app.enableCors();
+
+    await app.init();
+  }
+
+  return app;
 }
 
-export default async function handler(req: any, res: any) {
-  if (!server) {
-    server = await bootstrap();
-  }
-  return server(req, res);
+export default async function handler(req: Request, res: Response) {
+  const appInstance = await bootstrap();
+
+  const server = appInstance.getHttpAdapter().getInstance() as Express;
+
+  void server(req, res);
 }
