@@ -13,7 +13,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 
 import { UserRole } from './schemas/user.schema';
 
-import { Roles } from '@/auth/decorators/roles.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '@/auth/guards/auth.guard';
 import { RolesGuard } from '@/auth/guards/roles.guard';
