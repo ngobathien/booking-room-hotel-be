@@ -3,9 +3,9 @@ import { PaymentsService } from './payments.service';
 import { PaymentsController } from './payments.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Payment, PaymentSchema } from './schemas/payment.schema';
-import { Booking, BookingSchema } from '../bookings/schemas/booking.schema';
+import { Booking, BookingSchema } from '@/bookings/schemas/booking.schema';
 import { VnpayService } from './gateways/vnpay/vnpay.service';
-import { MailModule } from '../services/mail.module';
+import { MailModule } from '@/services/mail.module';
 
 @Module({
   imports: [

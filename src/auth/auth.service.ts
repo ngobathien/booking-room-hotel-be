@@ -5,20 +5,20 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { UsersService } from '@/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { SignInDto } from './dto/sign-in-auth.dto';
 import { SignUpDto } from './dto/sign-up-auth.dto';
 
 import * as bcrypt from 'bcrypt';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { User, UserDocument, UserStatus } from '../users/schemas/user.schema';
+import { User, UserDocument, UserStatus } from '@/users/schemas/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { RefreshToken } from './schemas/refresh-token.schema';
 import { randomUUID } from 'crypto';
 import { ResetToken } from './schemas/reset-token.schema';
-import { MailService } from '../services/mail.service';
+import { MailService } from '@/services/mail.service';
 import { Otp, OtpDocument } from './schemas/email-otp.schema';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 

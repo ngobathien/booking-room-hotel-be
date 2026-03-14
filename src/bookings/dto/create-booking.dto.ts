@@ -1,4 +1,4 @@
-import { IsDateString, IsMongoId } from 'class-validator';
+import { IsDateString, IsEmail, IsMongoId, IsString } from 'class-validator';
 
 export class CreateBookingDto {
   @IsMongoId()
@@ -9,4 +9,13 @@ export class CreateBookingDto {
 
   @IsDateString()
   checkOutDate: string;
+
+  @IsString()
+  fullName: string;
+
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  phone_number: string;
 }

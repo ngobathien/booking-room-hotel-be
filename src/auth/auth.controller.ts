@@ -13,7 +13,7 @@ import { AuthService } from './auth.service';
 import { SignInDto } from './dto/sign-in-auth.dto';
 import { SignUpDto } from './dto/sign-up-auth.dto';
 import { AuthGuard } from './guards/auth.guard';
-import { UsersService } from '../users/users.service';
+import { UsersService } from '@/users/users.service';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { ForgotPassworDto } from './dto/forgot-password.dto';

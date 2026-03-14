@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Booking, BookingDocument } from '../bookings/schemas/booking.schema';
+import { Booking, BookingDocument } from '@/bookings/schemas/booking.schema';
 import { Model } from 'mongoose';
 import {
   Payment,

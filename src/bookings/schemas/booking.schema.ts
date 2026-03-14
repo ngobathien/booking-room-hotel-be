@@ -28,7 +28,8 @@ export class Booking {
 
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   user: Types.ObjectId;
-  // snapshot
+
+  // snapshot tại thời điểm đặt booking
   @Prop({ required: true })
   fullName: string;
 
@@ -36,7 +37,7 @@ export class Booking {
   email: string;
 
   @Prop({ required: false })
-  phone: string;
+  phone_number: string;
 
   @Prop({ required: true })
   checkInDate: Date;
@@ -52,6 +53,16 @@ export class Booking {
 
   @Prop({ enum: BookingStayStatus, default: BookingStayStatus.NOT_CHECKED_IN })
   stayStatus: BookingStayStatus;
+
+  // timeline khi checkin, checkout theo time thực tế
+  @Prop()
+  confirmedAt?: Date;
+
+  @Prop()
+  checkedInAt?: Date;
+
+  @Prop()
+  checkedOutAt?: Date;
 }
 
 export const BookingSchema = SchemaFactory.createForClass(Booking);

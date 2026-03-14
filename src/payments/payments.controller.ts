@@ -8,12 +8,13 @@ import {
   Delete,
   Req,
   Query,
+  Res,
 } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
-import { UpdatePaymentDto } from './dto/update-payment.dto';
-import type { Request } from 'express';
+import type { Request, Response } from 'express';
 import { VnpayService } from './gateways/vnpay/vnpay.service';
+
 @Controller('payments')
 export class PaymentsController {
   constructor(
@@ -40,8 +41,8 @@ export class PaymentsController {
   }
 
   @Get('vnpay-return')
-  vnpayReturn(@Query() query: Record<string, string>) {
-    return this.vnpayService.vnpayReturn(query);
+  vnpayReturn(@Query() query: Record<string, string>, @Res() res: Response) {
+    return this.vnpayService.vnpayReturn(query, res);
   }
 
   @Get()

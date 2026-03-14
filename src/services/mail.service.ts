@@ -134,6 +134,7 @@ export class MailService {
     await this.transporter.sendMail(mailOptions);
   }
 
+  //
   async sendOtpEmail(to: string, otp: string) {
     const urlClient = process.env.URL_CLIENT;
     const verifyPath = process.env.URL_VERIFY_OTP;

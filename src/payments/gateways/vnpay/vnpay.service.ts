@@ -5,9 +5,9 @@ import {
   Booking,
   BookingDocument,
   BookingStatus,
-} from '../../../bookings/schemas/booking.schema';
+} from '@/bookings/schemas/booking.schema';
 import { Model } from 'mongoose';
-
+import { Response } from 'express';
 import * as qs from 'qs';
 import * as crypto from 'crypto';
 import { ConfigService } from '@nestjs/config';
@@ -16,7 +16,7 @@ import {
   PaymentDocument,
   PaymentStatus,
 } from '../../schemas/payment.schema';
-import { MailService } from '../../../services/mail.service';
+import { MailService } from '@/services/mail.service';
 
 @Injectable()
 export class VnpayService {
@@ -123,8 +123,84 @@ export class VnpayService {
     }).format(new Date(date));
   }
 
-  //
-  async vnpayReturn(query: any) {
+  // cũ
+  // async vnpayReturn(query: any) {
+  //   const secureHash = query.vnp_SecureHash;
+
+  //   delete query.vnp_SecureHash;
+  //   delete query.vnp_SecureHashType;
+
+  //   const sortedParams = this.sortObject(query);
+
+  //   const signData = qs.stringify(sortedParams, { encode: false });
+
+  //   const secretKey = this.configService.get<string>('VNP_HASH_SECRET')!;
+
+  //   const signed = crypto
+  //     .createHmac('sha512', secretKey)
+  //     .update(Buffer.from(signData, 'utf-8'))
+  //     .digest('hex');
+
+  //   if (secureHash !== signed) {
+  //     return { message: 'Invalid checksum' };
+  //   }
+
+  //   const paymentId = query.vnp_TxnRef;
+
+  //   const payment = await this.paymentModel.findById(paymentId);
+
+  //   if (!payment) {
+  //     throw new NotFoundException('Payment not found');
+  //   }
+
+  //   if (query.vnp_ResponseCode === '00') {
+  //     payment.status = PaymentStatus.SUCCESS;
+  //     payment.transactionId = query.vnp_TransactionNo;
+
+  //     await payment.save();
+
+  //     const booking = await this.bookingModel
+  //       .findByIdAndUpdate(
+  //         payment.booking,
+  //         { bookingStatus: BookingStatus.CONFIRMED },
+  //         { new: true },
+  //       )
+  //       .populate('user', 'email fullName');
+
+  //     if (!booking) {
+  //       throw new NotFoundException('Booking not found');
+  //     }
+
+  //     const user: any = booking.user;
+
+  //     console.log('booking', booking);
+  //     console.log('User email:', user.email);
+  //     const checkIn = this.formatDateVN(booking.checkInDate) + ' - 14:00';
+  //     const checkOut = this.formatDateVN(booking.checkOutDate) + ' - 12:00';
+
+  //     // gửi mail cho user sau khi thanh toán thành công
+  //     if (user?.email) {
+  //       await this.mailService.sendBookingSuccessEmail(
+  //         user.email,
+  //         booking._id.toString(),
+  //         booking.bookingCode,
+  //         'Your Hotel',
+  //         checkIn,
+  //         checkOut,
+  //         booking.totalPrice,
+  //       );
+  //     }
+  //     return { message: 'Payment success' };
+  //   }
+
+  //   payment.status = PaymentStatus.FAILED;
+  //   await payment.save();
+
+  //   return { message: 'Payment failed' };
+  // }
+
+  // có return về cho fe
+  async vnpayReturn(query: any, res: Response) {
     const secureHash = query.vnp_SecureHash;
 
     delete query.vnp_SecureHash;
@@ -141,18 +217,23 @@ export class VnpayService {
       .update(Buffer.from(signData, 'utf-8'))
       .digest('hex');
 
+    const frontendUrl = this.configService.get<string>('URL_CLIENT');
+
+    // verify chữ ký
     if (secureHash !== signed) {
-      return { message: 'Invalid checksum' };
+      return res.redirect(`${frontendUrl}/payment/result?status=failed`);
     }
 
+    // lấy payment
     const paymentId = query.vnp_TxnRef;
 
     const payment = await this.paymentModel.findById(paymentId);
 
     if (!payment) {
-      throw new NotFoundException('Payment not found');
+      return res.redirect(`${frontendUrl}/payment/result?status=failed`);
     }
 
+    // thanh toán thành công
     if (query.vnp_ResponseCode === '00') {
       payment.status = PaymentStatus.SUCCESS;
       payment.transactionId = query.vnp_TransactionNo;
@@ -174,7 +255,7 @@ export class VnpayService {
       const user: any = booking.user;
 
       console.log('booking', booking);
-      console.log('User email:', user.email);
+      console.log('User email booking:', user.email);
       const checkIn = this.formatDateVN(booking.checkInDate) + ' - 14:00';
       const checkOut = this.formatDateVN(booking.checkOutDate) + ' - 12:00';
 
@@ -190,13 +271,21 @@ export class VnpayService {
           booking.totalPrice,
         );
       }
-      return { message: 'Payment success' };
+
+      // return res.redirect(`${frontendUrl}/payment/result?status=success`);
+      return res.redirect(
+        `${frontendUrl}/payment/result?status=success&bookingId=${payment.booking}`,
+      );
     }
 
+    // thanh toán thất bại
     payment.status = PaymentStatus.FAILED;
     await payment.save();
 
-    return { message: 'Payment failed' };
+    // return res.redirect(`${frontendUrl}/payment/result?status=failed`);
+    return res.redirect(
+      `${frontendUrl}/payment/result?status=failed&bookingId=${payment.booking}`,
+    );
   }
 
   async vnpayIpn(query: any) {

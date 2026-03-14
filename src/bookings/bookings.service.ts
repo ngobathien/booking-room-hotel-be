@@ -13,12 +13,12 @@ import {
   BookingStayStatus,
 } from './schemas/booking.schema';
 import { Model } from 'mongoose';
-import { Room, RoomDocument } from '../rooms/schemas/room.schema';
+import { Room, RoomDocument } from '@/rooms/schemas/room.schema';
 import {
   RoomType,
   RoomTypeDocument,
-} from '../room-types/schemas/room-type.schema';
-import { User, UserDocument } from '../users/schemas/user.schema';
+} from '@/room-types/schemas/room-type.schema';
+import { User, UserDocument } from '@/users/schemas/user.schema';
 
 @Injectable()
 export class BookingsService {
@@ -47,7 +47,7 @@ export class BookingsService {
 
     const conflict = await this.bookingModel.findOne({
       room: roomId,
-      bookingStatus: { $ne: BookingStatus.CANCELLED },
+      bookingStatus: { $in: [BookingStatus.PENDING, BookingStatus.CONFIRMED] },
       checkInDate: { $lt: checkOutDate },
       checkOutDate: { $gt: checkInDate },
     });
@@ -59,7 +59,7 @@ export class BookingsService {
 
   // tạo mã booking
   generateBookingCode() {
-    const prefix = process.env.BOOKING_CODE_PREFIX;
+    const prefix = process.env.BOOKING_CODE_PREFIX || 'BKNBT';
     const random = Math.floor(100000 + Math.random() * 900000);
     const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
 
@@ -76,7 +76,8 @@ export class BookingsService {
        7. Tạo booking */
   async createBooking(createBookingDto: CreateBookingDto, userId: string) {
     // nhận dữ liệu từ DTO, đầu vào
-    const { room, checkInDate, checkOutDate } = createBookingDto;
+    const { room, checkInDate, checkOutDate, fullName, email, phone_number } =
+      createBookingDto;
 
     // validate check-in, check-out
     const checkIn = new Date(checkInDate);
@@ -130,7 +131,7 @@ export class BookingsService {
       throw new BadRequestException('Phòng đã được đặt trong thời gian này');
     }
 
-    // 3️⃣ Tính số đêm
+    // Tính số đêm
     const nights = Math.ceil(
       (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24),
     ); // 1000 ms * 60s * 60m * 24h
@@ -138,7 +139,7 @@ export class BookingsService {
     // tính tổng tiền
     const totalPrice = nights * roomData.roomType.pricePerNight;
 
-    // 6️⃣ Lấy thông tin user để snapshot
+    // Lấy thông tin user để snapshot
     const user = await this.userModel.findById(userId);
 
     if (!user) {
@@ -147,14 +148,14 @@ export class BookingsService {
 
     //
     const bookingCode = this.generateBookingCode();
-    // 4️⃣ Tạo booking
+    // Tạo booking
     return this.bookingModel.create({
       bookingCode,
       room,
       user: userId,
-      fullName: user.fullName,
-      email: user.email,
-      phone: user.phone_number,
+      fullName: fullName || user.fullName,
+      email: email || user.email,
+      phone_number: phone_number || user.phone_number,
       checkInDate: checkIn,
       checkOutDate: checkOut,
       totalPrice,
@@ -254,6 +255,7 @@ export class BookingsService {
 
     // Cập nhật trạng thái sang CHECKED_IN (khách đã nhận phòng)
     booking.stayStatus = BookingStayStatus.CHECKED_IN;
+    booking.checkedInAt = new Date();
 
     // Lưu lại database
     await booking.save();
@@ -285,6 +287,8 @@ export class BookingsService {
     booking.stayStatus = BookingStayStatus.CHECKED_OUT;
     //
     booking.bookingStatus = BookingStatus.COMPLETED;
+
+    booking.checkedOutAt = new Date();
     // Lưu vào database
     await booking.save();
 
