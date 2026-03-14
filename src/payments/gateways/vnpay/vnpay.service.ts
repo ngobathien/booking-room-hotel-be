@@ -5,7 +5,7 @@ import {
   Booking,
   BookingDocument,
   BookingStatus,
-} from '@/bookings/schemas/booking.schema';
+} from '../../../bookings/schemas/booking.schema';
 import { Model } from 'mongoose';
 import { Response } from 'express';
 import * as qs from 'qs';
@@ -16,7 +16,7 @@ import {
   PaymentDocument,
   PaymentStatus,
 } from '../../schemas/payment.schema';
-import { MailService } from '@/services/mail.service';
+import { MailService } from '../../../services/mail.service';
 
 @Injectable()
 export class VnpayService {

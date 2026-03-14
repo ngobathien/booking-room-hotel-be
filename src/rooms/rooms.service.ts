@@ -8,9 +8,9 @@ import { UpdateRoomDto } from './dto/update-room.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Room, RoomDocument } from './schemas/room.schema';
 import { isValidObjectId, Model, Types } from 'mongoose';
-import { SupabaseService } from '@/config/supabase.config';
-import { sanitizeFileName } from '@/common/utils/sanitizeFileName.utils';
-import { Booking, BookingDocument } from '@/bookings/schemas/booking.schema';
+import { SupabaseService } from '../config/supabase.config';
+import { sanitizeFileName } from '../common/utils/sanitizeFileName.utils';
+import { Booking, BookingDocument } from '../bookings/schemas/booking.schema';
 import { SearchRoomDto } from './dto/search-room.dto';
 
 @Injectable()

@@ -1,7 +1,7 @@
 // import { BadRequestException, Injectable } from '@nestjs/common';
-// import { SupabaseService } from '@/config/supabase.config';
+// import { SupabaseService } from '../config/supabase.config';
 // import { Types } from 'mongoose';
-// import { sanitizeFileName } from '@/common/utils/sanitizeFileName.utils';
+// import { sanitizeFileName } from '../common/utils/sanitizeFileName.utils';
 
 // @Injectable()
 // export class StorageService {
